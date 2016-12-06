@@ -1,4 +1,10 @@
-digits = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+digits = [
+    [0, 0, 1, 0, 0],
+    [0, 2, 3, 4, 0],
+    [5, 6, 7, 8, 9],
+    [0, "A", "B", "C", 0],
+    [0, 0, "D", 0, 0]
+]
 
 
 def get_digit_position(directions, last_position):
@@ -7,19 +13,20 @@ def get_digit_position(directions, last_position):
 
     for direction in directions:
         if direction == "U":
-            x = x - 1 if x - 1 >= 0 else x
+            x = x - 1 if x - 1 >= 0 and dfp([x - 1, y]) != 0 else x
         elif direction == "R":
-            y = y + 1 if y + 1 < 3 else y
+            y = y + 1 if y + 1 < len(digits[x]) and dfp([x, y + 1]) != 0 else y
         elif direction == "D":
-            x = x + 1 if x + 1 < 3 else x
+            x = x + 1 if x + 1 < 5 and dfp([x + 1, y]) != 0 else x
         elif direction == "L":
-            y = y - 1 if y - 1 >= 0 else y
+            y = y - 1 if y - 1 >= 0 and dfp([x, y - 1]) != 0 else y
 
     return [x, y]
 
 
-def digit_from_position(p):
-    return str(digits[p[0]][p[1]])
+def dfp(p):
+    return digits[p[0]][p[1]]
+
 
 def main():
     data_strings = [
@@ -31,11 +38,11 @@ def main():
     ]
 
     code = ""
-    position = [1, 1]
+    position = [2, 0]
 
     for string in data_strings:
         position = get_digit_position(string, position)
-        code += digit_from_position(position)
+        code += str(dfp(position))
 
     print("CODE:", code)
 
