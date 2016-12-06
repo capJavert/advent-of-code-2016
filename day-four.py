@@ -43,11 +43,25 @@ def is_real_room(string):
     return True if my_checksum[0:5] == checksum else False
 
 
+def decode_name(string, shift):
+    decoded_name = ""
+    letters = "abcdefghijklmnopqrstuvwxyz"
+    encoded_name = " ".join(string.split("[")[0].split("-")[:-1])
+
+    for x in encoded_name:
+        if letters.find(x) >= 0:
+            decoded_name += letters[(letters.find(x)+shift) % len(letters)]
+        else:
+            decoded_name += " "
+
+    return decoded_name
+
+
 def main():
     data_strings = get_and_prepare_data_string()
-    id_sum = 0
 
     for string in data_strings:
-        id_sum = id_sum + gidfs(string) if is_real_room(string) else id_sum
+        if is_real_room(string):
+            print(decode_name(string, gidfs(string)), gidfs(string))
 
 main()
