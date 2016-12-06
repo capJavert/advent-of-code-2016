@@ -32,7 +32,7 @@ def main():
             position_counts[index][letter] += 1
 
     for count in position_counts:
-        message += max(count, key=lambda p: count[p])
+        message += min(count, key=lambda p: count[p])
 
     print(message)
 
