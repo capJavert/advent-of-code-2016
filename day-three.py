@@ -9,12 +9,20 @@ def get_and_prepare_data_string():
     request = requests.get("http://pastebin.com/raw/tfRrctp5")
     request.encoding = 'ISO-8859-1'
 
-    for line in request.text.splitlines():
-        line = ' '.join(line.split())
+    triangle_data = request.text.replace("\n", " ").split()
 
-        data_strings.append(line.split(" "))
+    for j in range(0, 3):
+        strings_part = []
+        for i in range(0, len(triangle_data), 3):
+            strings_part.append(triangle_data[j+i])
 
-    return data_strings
+        data_strings += strings_part
+
+    column_data_strings = []
+    for i in range(0, len(data_strings), 3):
+        column_data_strings.append([data_strings[i], data_strings[i+1], data_strings[i+2]])
+
+    return column_data_strings
 
 
 def is_valid_triangle(triangle):
