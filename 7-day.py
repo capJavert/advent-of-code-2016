@@ -11,9 +11,16 @@ def get_and_prepare_data_string():
     return request.text.splitlines()
 
 
-def is_abba(string):
-    if string != len(string) * string[0] and len(string) == 4:
+def is_aba(string):
+    if string != len(string) * string[0] and len(string) == 3:
         return True if str(string) == str(string)[::-1] else False
+    else:
+        return False
+
+
+def is_bab(string, aba):
+    if string != len(string) * string[0] and len(string) == 3:
+        return True if string == aba[1]+aba[0]+aba[1] else False
     else:
         return False
 
@@ -21,12 +28,12 @@ def is_abba(string):
 def main():
     data_strings = get_and_prepare_data_string()
 
+    valid_super_strings = []
     valid_ips = 0
 
     for string in data_strings:
-        is_valid = False
-        is_valid_hypernet = True
         invert = False
+        aba_strings = []
 
         for (index, letter) in enumerate(string):
             if letter == "[":
@@ -37,14 +44,35 @@ def main():
                 invert = False
                 continue
 
-            if is_abba(string[index:index+4]) and not invert:
-                is_valid = True
+            if not invert:
+                if is_aba(string[index:index+3]):
+                    aba_strings.append(string[index:index+3])
 
-            if is_abba(string[index:index+4]) and invert:
-                is_valid_hypernet = False
+        if len(aba_strings) > 0:
+            valid_super_strings.append([string, aba_strings])
 
-        if is_valid and is_valid_hypernet:
-            valid_ips += 1
+    for string in valid_super_strings:
+        is_valid_hypernet = False
+        invert = False
+
+        for(index, letter) in enumerate(string[0]):
+            if letter == "[":
+                invert = True
+                continue
+
+            if letter == "]":
+                invert = False
+                continue
+
+            if invert:
+                for aba in string[1]:
+                    if is_bab(string[0][index:index+3], aba):
+                        is_valid_hypernet = True
+                        break
+
+            if is_valid_hypernet:
+                valid_ips += 1
+                break
 
     print(valid_ips)
 
