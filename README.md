@@ -1,5 +1,7 @@
 # Advent of Code 2016
 
+###Update #3: Finished day 9 challenge, execution time of my script for part 2 was 3738 sec ~ 1 hour ... just lool but well i had time :)
+
 ###Update #2: Finished challenge for day 7 rather easy.. I will try to keep solving challenges on day by day basis from now on.
 
 ###Update #1: After several hours managed to catch up and finish all 6 available challenges.. waiting for day 7 challenge! So lets goo!
