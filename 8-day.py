@@ -91,6 +91,5 @@ def main():
             passcode = rotate_column(string, passcode)
 
     print(passcode_to_string(passcode))
-    print("ACTIVE PIXELS: "+str(passcode_to_string(passcode).count("#")))
 
 main()
