@@ -1,5 +1,7 @@
 import requests
 
+file_size = 0
+
 
 def get_and_prepare_data_string():
     """
@@ -11,45 +13,53 @@ def get_and_prepare_data_string():
     return request.text.splitlines()
 
 
+def decompress(string):
+    global file_size
+    file = ""
+    marker = ""
+    marker_mode = False
+    index = 0
+    while index < len(string):
+        char = string[index]
+
+        if char == "(":
+            marker_mode = True
+            index += 1
+            continue
+
+        if char == ")":
+            index += 1
+            a = int(marker.split("x")[0])
+            a_char = string[index:index + a]
+            b = int(marker.split("x")[-1])
+
+            for i in range(0, b):
+                decompress(a_char)
+
+            marker = ""
+            marker_mode = False
+
+            index += a
+            continue
+
+        if marker_mode:
+            marker += char
+        else:
+            file += char
+
+        index += 1
+
+    file_size += len(file)
+
+
 def main():
+    global file_size
     data_strings = get_and_prepare_data_string()
 
-    file = ""
+    for i, string in enumerate(data_strings):
+        string = string.replace(" ", "")
+        decompress(string)
 
-    for string in data_strings:
-        marker = ""
-        marker_mode = False
-
-        index = 0
-        while index < len(string):
-            char = string[index]
-
-            if char == "(":
-                marker_mode = True
-                index += 1
-                continue
-
-            if char == ")":
-                index += 1
-                a = int(marker.split("x")[0])
-                a_char = string[index:index+a]
-                b = int(marker.split("x")[-1])
-
-                for i in range(0, b):
-                    file += a_char
-
-                marker = ""
-                marker_mode = False
-                index += a
-                continue
-
-            if marker_mode:
-                marker += char
-            else:
-                file += char
-
-            index += 1
-
-    print(len(file.replace(" ", "")))
+    print(file_size)
 
 main()
