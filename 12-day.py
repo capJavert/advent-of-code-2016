@@ -1,6 +1,6 @@
 import requests
 
-registers = {"a": 0, "b": 0, "c": 0, "d": 0}
+registers = {"a": 0, "b": 0, "c": 1, "d": 0}
 
 
 def get_and_prepare_data_string():
