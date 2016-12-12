@@ -158,5 +158,6 @@ def main():
             print(index)
             break
 
+    print("MULTIPLY OF VALUES:", output_bin[0]*output_bin[1]*output_bin[2])
 
 main()
