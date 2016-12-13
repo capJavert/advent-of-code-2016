@@ -50,18 +50,21 @@ def move(direction):
     global floor
     global steps
 
-    floor = floor-1 if direction == "down" else floor+1
+    if items[0] != "/" or items[1] != "/":
+        floor = floor-1 if direction == "down" else floor+1
 
-    if floor > 3:
-        floor -= 1
-        print("You are on the top floor!")
-    elif floor < 0:
-        floor += 1
-        print("You are on the ground floor!")
+        if floor > 3:
+            floor -= 1
+            print("You are on the top floor!")
+        elif floor < 0:
+            floor += 1
+            print("You are on the ground floor!")
+        else:
+            print_floors_map()
+            steps += 1
+            print("STEPS: ", steps)
     else:
-        print_floors_map()
-        steps += 1
-        print("STEPS: ", steps)
+        print("Elevator must have items to move!")
 
 
 def pick(item):
