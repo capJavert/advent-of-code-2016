@@ -1,5 +1,7 @@
 # Advent of Code 2016
 
+###Update #6: Finished Day 11 challenge too (game did help a lot) and now I am on course again!!
+
 ###Update #5: Day 11 challenge is kinda killing me and I figured I will rather make a game for it. So I implemented simple shell game with all the rules from the challenge.. Can you beat it in minimum number of steps and send it to me pls? :P
 
 ###Update #4: Finished day 10 challenge.. really messed it up :P, this weekend was super busy so I am late for day 11 and 12 challenges I'll try to solve them and get back on track again as soon as I can..
