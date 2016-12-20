@@ -13,7 +13,9 @@ def get_and_prepare_data_string():
 
 def main():
     data_strings = get_and_prepare_data_string()
+    limit = 4294967295
     low = 0
+    high = 0
 
     firewall = [[], []]
 
@@ -31,10 +33,16 @@ def main():
     firewall[0] = sorted(firewall[0])
     firewall[1] = sorted(firewall[1])
 
+    ip_count = 0
     for i in range(0, len(firewall[0])):
-        if firewall[1][i] > low >= firewall[0][i]:
-            low = firewall[1][i] + 1
+        if high > firewall[0][i] > low:
+            ip_count += (firewall[1][i] - high)
+        else:
+            ip_count += (firewall[1][i] - firewall[0][i] + 1)
 
-    print(low)
+        high = firewall[1][i]
+        low = firewall[0][i]
+
+    print(limit - ip_count + 1)
 
 main()
