@@ -14,22 +14,14 @@ def get_and_prepare_data_string():
 
 def main():
     data_strings = get_and_prepare_data_string()
-    password = "abcdefgh"
-    """password = "decab"
-    data_strings = [
-        "swap position 4 with position 0",
-        "swap letter d with letter b",
-        "reverse positions 0 through 4",
-        "rotate left 1 step",
-        "move position 1 to position 4",
-        "move position 3 to position 0",
-        "rotate based on position of letter b",
-        "rotate based on position of letter d"
-    ]"""
+    password = "fbgdceah"
+
+    data_strings.reverse()
 
     for operation in data_strings:
         if "swap position" in operation:
             params = [int(x) for x in operation.split() if x.isnumeric()]
+            params.reverse()
             temp = list(password)
             s = temp[params[1]]
             temp[params[1]] = temp[params[0]]
@@ -38,6 +30,7 @@ def main():
         elif "swap letter" in operation:
             params = operation.split(" ")
             params = [params[2], params[-1]]
+            params.reverse()
             password = password.replace(params[0], "#").replace(params[1], params[0]).replace("#", params[1])
         elif "reverse" in operation:
             params = [int(x) for x in operation.split() if x.isnumeric()]
@@ -47,13 +40,14 @@ def main():
         elif "rotate" in operation and "step" in operation:
             params = [int(x) for x in operation.split() if x.isnumeric()]
             temp = deque(password)
-            if "left" in operation:
+            if "right" in operation:
                 temp.rotate(-params[0])
             else:
                 temp.rotate(params[0])
             password = "".join(temp)
         elif "move" in operation:
             params = [int(x) for x in operation.split() if x.isnumeric()]
+            params.reverse()
             temp = list(password)
             char = temp[params[0]]
             temp.pop(params[0])
@@ -62,9 +56,21 @@ def main():
         elif "rotate based":
             params = [operation[-1]]
             index = password.find(params[0])
-            index = index + 1 if index >= 4 else index
             temp = deque(password)
-            temp.rotate(index + 1)
+
+            if index == 0 or index == 1:
+                temp.rotate(-1)
+            elif index == 2:
+                temp.rotate(2)
+            elif index == 3:
+                temp.rotate(-2)
+            elif index == 4:
+                temp.rotate(1)
+            elif index == 5:
+                temp.rotate(-3)
+            elif index == 7:
+                temp.rotate(4)
+
             password = "".join(temp)
 
     print(password)
