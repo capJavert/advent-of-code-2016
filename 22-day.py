@@ -11,19 +11,35 @@ def get_and_prepare_data_string():
     return request.text.splitlines()
 
 
+def print_grid(grid, position):
+    for i in range(0, len(grid), 27):
+        string = ""
+        for j in range(i, i+27):
+            if int(grid[j][2].replace("T", "")) != 0:
+                if [i, j] == position:
+                    string += " G "
+                elif i == 0 and j == 0:
+                    string += "(.) "
+                else:
+                    string += " .  "
+            else:
+                if [i, j] == position:
+                    string += " G "
+                elif i == 0 and j == 0:
+                    string += "(_) "
+                else:
+                    string += " _  "
+
+        print(string)
+
+
 def main():
-    discs = []
+    grid = []
+    position = [0, 26]
     data_strings = get_and_prepare_data_string()
 
     for string in data_strings:
-        disc = string.split()
+        grid.append(string.split())
 
-        if int(disc[2].replace("T", "")) != 0:
-            for string2 in data_strings:
-                disc2 = string2.split()
-
-                if disc2 != disc and int(disc[2].replace("T", "")) <= int(disc2[3].replace("T", "")):
-                    discs.append([disc, disc2])
-
-    print("PAIRS:", len(discs))
+    print_grid(grid, position)
 main()
