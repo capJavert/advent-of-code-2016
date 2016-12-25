@@ -1,5 +1,7 @@
 # Advent of Code 2016
 
+###Update #8 Merry Xmas!! I was kinda busy last to days so i did not managed to to finish last two days of challenge (too busy decorating xmas tree).. I will try to finish everything until the end of the year :)
+
 ###Update #7: Finished part 1 of day 17 challenge, did it on manual with shell game similar to day 11.. part 2 requires longest path so i think ill have to make a bot for it after all, gonna be something new for me :/
 
 ###Update #6: Finished Day 11 challenge too (game did help a lot) and now I am on course again!!
