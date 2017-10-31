@@ -70,9 +70,9 @@ def main():
     min_steps = 100000000
 
     for path in paths:
-        print(path)
         steps = 0
         start = waypoints["0"]
+        goal = None
 
         for waypoint in path:
             if waypoint == "0":
@@ -82,6 +82,10 @@ def main():
             steps += len(find_path_astar(maze, start, goal))
 
             start = goal
+
+        # now go back to starting point
+        goal = waypoints["0"]
+        steps += len(find_path_astar(maze, start, goal))
 
         if steps < min_steps:
             min_steps = steps

@@ -1,5 +1,7 @@
 # Advent of Code 2016
 
+### Update #10 Advent of Code 2017 hopefully starts in one month so i decided to go back and finish the rest of the challenges for warm up, because you know.. Winter is coming :P .. finished day 24 today with A+ algorithm and finally learned some path finding stuff :D
+
 ### Update #9 Happy New Year!! Didn't quite make it with rest of the challenges, just a couple of stars off, maybe sometimes in this new year.. maybe ??
 
 ### Update #8 Merry Xmas!! I was kinda busy last to days so i did not managed to to finish last two days of challenge (too busy decorating xmas tree).. I will try to finish everything until the end of the year :)
