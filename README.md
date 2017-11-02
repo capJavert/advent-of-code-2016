@@ -1,5 +1,7 @@
 # Advent of Code 2016
 
+### Update #11 Finished 17 day challenge, it was difficult for me before because i was not familiar with path finding algorithms, today i reworked my original solution (Update #7) with A* algorithm and then part 2 with the same algorithm and minor modification to let him cycle through all paths :D
+
 ### Update #10 Advent of Code 2017 hopefully starts in one month so i decided to go back and finish the rest of the challenges for warm up, because you know.. Winter is coming :P .. finished day 24 today with A+ algorithm and finally learned some path finding stuff :D
 
 ### Update #9 Happy New Year!! Didn't quite make it with rest of the challenges, just a couple of stars off, maybe sometimes in this new year.. maybe ??

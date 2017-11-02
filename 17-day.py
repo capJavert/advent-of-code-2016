@@ -98,6 +98,7 @@ def heuristic(cell, goal):
 
 def find_path_astar(maze):
     global last_state
+    global longest_path
     start, goal = (1, 1), (len(maze) - 2, len(maze[0]) - 2)
     pr_queue = []
     heappush(pr_queue, (0 + heuristic(start, goal), 0, "", start))
@@ -107,6 +108,7 @@ def find_path_astar(maze):
     while True:
         while pr_queue:
             visited = set()
+            visited.add(goal)
             if not fix:
                 _, cost, path, current = heappop(pr_queue)
             else:
@@ -115,7 +117,9 @@ def find_path_astar(maze):
             last_state = _, cost, path, current
             graph = maze2graph(adjust_with_options(path, [current[0], current[1]]))
             if current == goal:
-                return path
+                if longest_path < len(path):
+                    longest_path = len(path)
+                    print(longest_path)
             if current in visited:
                 continue
             visited.add(current)
@@ -129,6 +133,7 @@ def find_path_astar(maze):
 
 last_state = None
 passcode = "pgflpeqp"
+longest_path = 0
 
 
 def main():
