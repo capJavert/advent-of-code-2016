@@ -1,115 +1,147 @@
 from hashlib import md5
-import os
+from heapq import heappop, heappush
 
-directions = ["U", "D", "L", "R"]
+directions = ["UP", "DOWN", "LEFT", "RIGHT"]
 
 
-def print_maze(position, maze):
-    for index, line in enumerate(maze):
-        string = ""
+def translate_orientation(path):
+    path = path.replace("S", "D")
+    path = path.replace("N", "U")
+    path = path.replace("E", "R")
+    path = path.replace("W", "L")
 
-        for j, item in enumerate(line):
-            if [index, j] == position:
-                string += "S"
+    return path
+
+
+def print_maze(maze, position):
+    for i, line in enumerate(maze):
+        for j, c in enumerate(line):
+            if [i, j] == position:
+                print(5, " ", end="")
             else:
-                string += item
+                print(c, " ", end="")
 
-        print(string)
+        print()
 
 
-def print_options(passcode):
+def adjust_with_options(path, position):
+    global passcode
+
+    original_maze = [
+        ["#", "#", "#", "#", "#", "#"],
+        ["#", " ", " ", " ", " ", "#"],
+        ["#", " ", " ", " ", " ", "#"],
+        ["#", " ", " ", " ", " ", "#"],
+        ["#", " ", " ", " ", " ", "#"],
+        ["#", "#", "#", "#", "#", "#"]
+    ]
+
+    new_maze = list(original_maze)
+
     m = md5()
-    m.update(passcode.encode())
+    path = translate_orientation(path)
+
+    m.update((passcode+path).encode())
     hash_string = m.hexdigest()
 
     for i, c in enumerate(hash_string[0:4]):
         if c in "bcdef":
-            print(directions[i]+":", "OPEN")
+            if directions[i] == "UP" and new_maze[position[0] - 1][position[1]] != "#":
+                new_maze[position[0] - 1][position[1]] = " "
+            elif directions[i] == "DOWN" and new_maze[position[0] + 1][position[1]] != "#":
+                new_maze[position[0] + 1][position[1]] = " "
+            elif directions[i] == "LEFT" and new_maze[position[0]][position[1] - 1] != "#":
+                new_maze[position[0]][position[1] - 1] = " "
+            elif directions[i] == "RIGHT" and new_maze[position[0]][position[1] + 1] != "#":
+                new_maze[position[0]][position[1] + 1] = " "
         else:
-            print(directions[i] + ":", "CLOSED")
+            if directions[i] == "UP":
+                new_maze[position[0] - 1][position[1]] = "#"
+            elif directions[i] == "DOWN":
+                new_maze[position[0] + 1][position[1]] = "#"
+            elif directions[i] == "LEFT":
+                new_maze[position[0]][position[1] - 1] = "#"
+            elif directions[i] == "RIGHT":
+                new_maze[position[0]][position[1] + 1] = "#"
+
+    int_maze = []
+
+    for i, line in enumerate(new_maze):
+        int_maze.append([])
+
+        for j, c in enumerate(line):
+            int_maze[i].append(1 if (c == "#" or c == "-" or c == "|") else 0)
+
+    # print(path)
+    # print_maze(int_maze, position)
+
+    return int_maze
 
 
-def get_options(passcode):
-    m = md5()
-    m.update(passcode.encode())
-    hash_string = m.hexdigest()
-    open_directions = ["CLOSED"] * 4
+def maze2graph(current_maze):
+    height = len(current_maze)
+    width = len(current_maze[0]) if height else 0
+    graph = {(i, j): [] for j in range(width) for i in range(height) if not current_maze[i][j]}
+    for row, col in graph.keys():
+        if row < height - 1 and not current_maze[row + 1][col]:
+            graph[(row, col)].append(("S", (row + 1, col)))
+            graph[(row + 1, col)].append(("N", (row, col)))
+        if col < width - 1 and not current_maze[row][col + 1]:
+            graph[(row, col)].append(("E", (row, col + 1)))
+            graph[(row, col + 1)].append(("W", (row, col)))
+    return graph
 
-    for i, c in enumerate(hash_string[0:4]):
-        if c in "bcdef":
-            open_directions[i] = "OPEN"
-        else:
-            open_directions[i] = "CLOSED"
 
-    return open_directions
+def heuristic(cell, goal):
+    return abs(cell[0] - goal[0]) + abs(cell[1] - goal[1])
 
 
-def check_locked(passcode):
-    m = md5()
-    m.update(passcode.encode())
-    hash_string = m.hexdigest()
+def find_path_astar(maze):
+    global last_state
+    start, goal = (1, 1), (len(maze) - 2, len(maze[0]) - 2)
+    pr_queue = []
+    heappush(pr_queue, (0 + heuristic(start, goal), 0, "", start))
+    fix = False
+    _, cost, path, current = (None, None, None, None)
 
-    for i, c in enumerate(hash_string[0:4]):
-        if c in "bcdef":
-            return False
+    while True:
+        while pr_queue:
+            visited = set()
+            if not fix:
+                _, cost, path, current = heappop(pr_queue)
+            else:
+                fix = False
 
-    return True
+            last_state = _, cost, path, current
+            graph = maze2graph(adjust_with_options(path, [current[0], current[1]]))
+            if current == goal:
+                return path
+            if current in visited:
+                continue
+            visited.add(current)
+            for direction, neighbour in graph[current]:
+                heappush(pr_queue, (cost + heuristic(neighbour, goal), cost + 1,
+                                    path + direction, neighbour))
+
+        _, cost, path, current = last_state
+        fix = True
+
+
+last_state = None
+passcode = "pgflpeqp"
 
 
 def main():
-    maze = [
-        ["#", "#", "#", "#", "#", "#", "#", "#", "#"],
-        ["#", " ", "|", " ", "|", " ", "|", " ", "#"],
-        ["#", "-", "#", "-", "#", "-", "#", "-", "#"],
-        ["#", " ", "|", " ", "|", " ", "|", " ", "#"],
-        ["#", "-", "#", "-", "#", "-", "#", "-", "#"],
-        ["#", " ", "|", " ", "|", " ", "|", " ", "#"],
-        ["#", "-", "#", "-", "#", "-", "#", "-", "#"],
-        ["#", " ", "|", " ", "|", " ", "|"],
-        ["#", "#", "#", "#", "#", "#", "#", " ", "V"]
+    original_maze = [
+        ["#", "#", "#", "#", "#", "#"],
+        ["#", " ", " ", " ", " ", "#"],
+        ["#", " ", " ", " ", " ", "#"],
+        ["#", " ", " ", " ", " ", "#"],
+        ["#", " ", " ", " ", " ", "#"],
+        ["#", "#", "#", "#", "#", "#"]
     ]
 
-#   name = input("What is your name? ")
-    name = "javert"
-    passcode = "pgflpeqp"
-    path = ""
-    my_position = [1, 1]
-    old_position = [1, 1]
-    lock = False
+    print(translate_orientation(find_path_astar(original_maze)))
 
-    while True:
-        os.system('clear')
-
-        options = get_options(passcode+path)
-
-        if lock:
-            options[lock] = "CLOSED"
-            lock = False
-        else:
-            old_position = my_position
-
-        print_options(passcode+path)
-
-        if options[0] == "OPEN" and maze[my_position[0]-1][my_position[1]] != "#" and not check_locked(passcode+path+"U"):
-            path += "U"
-            my_position[0] -= 2
-        elif options[1] == "OPEN" and maze[my_position[0] + 1][my_position[1]] != "#" and not check_locked(passcode+path+"D"):
-            path += "D"
-            my_position[0] += 2
-        elif options[2] == "OPEN" and maze[my_position[0]][my_position[1]-1] != "#" and not check_locked(passcode+path+"L"):
-            path += "L"
-            my_position[1] -= 2
-        elif options[3] == "OPEN" and maze[my_position[0]][my_position[1]+1] != "#" and not check_locked(passcode+path+"R"):
-            path += "R"
-            my_position[1] += 2
-        else:
-            my_position = old_position
-            lock = path[-1]
-            path = path[:-1]
-            lock = directions.index(lock)
-
-        print_maze(my_position, maze)
-        print("PATH:", path)
-        print("------------------------------")
 
 main()
